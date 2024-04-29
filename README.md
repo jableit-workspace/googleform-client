@@ -18,16 +18,16 @@ To build all apps and packages, run the following command:
 
 ```
 cd my-turborepo
-pnpm build
+pnpm build:fe
 ```
 
-### Develop
+### 프론트 실행
 
 To develop all apps and packages, run the following command:
 
 ```
 cd my-turborepo
-pnpm dev
+pnpm dev:fe
 ```
 
 ## TurboRepo
