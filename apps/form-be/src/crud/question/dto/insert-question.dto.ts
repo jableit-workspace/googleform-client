@@ -7,9 +7,9 @@ import {
 } from 'class-validator';
 
 export class WriteMyDto {
-  @IsNotEmpty()
-  @IsNumber()
-  type: number;
+  // @IsNotEmpty()
+  // @IsNumber()
+  // type: number;
   @IsNotEmpty()
   @IsNumber()
   id: number;

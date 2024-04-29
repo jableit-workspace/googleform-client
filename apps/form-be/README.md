@@ -26,32 +26,137 @@
 
 [Nest](https://github.com/nestjs/nest) 구글 설문지 RestAPI 서버
 
+## 실행방법
+
+npm install
+npm run start:dev
+
 ## API
 
 ```bash
-# POST /question : 설문지 등록
+# PUT /question : 설문지 등록
+예시 : https://google.vote24.co.kr/question
 input params
-  title: string
-  description string
-  email: string
-  questions: array
-    type: number
-    name: string
-    option: string
-    optionyn: boolean
+  title: string / 설문지 제목
+  description string / 설문지 설명
+  email: string / 작성자 이메일
+  questions: array // 설문지 종류 ( 배열 )
+    type: number // 설문지 타입
+    name: string // 설문지 문의 사항
+    option: string // 선택 사항
+    optionyn: boolean // 필수유무
 
 output params
-  url: string
-  password : string
+  code: number / 상태코드
+  message: string / 상태메시지
+  time: string / API 호출 시간
+  id: string / 생성된 설문지의 ID
+```
 
-# GET /question : 등록 설문지 전체 조회
+```bash
+  # DELETE /question : 설문지 삭제
+  예시 : https://google.vote24.co.kr/question
+input params
+  id: number / 생성한 설문지의 id
+output params
+  code: number / 상태코드
+  message: string / 상태메시지
+  time: string / API 호출 시간
+```
 
-# GET /question/[id] : 등록 설문지 조회
+```bash
+#GET / /question/mypaper/ + email : 내가 작성한 설문지 가져오기
+예시 : https://google.vote24.co.kr/question/mypaper/signkj8841@naver.com
 
-# PUT /question/my/[id] : 설문지 등록
+output params
+  code: number / 상태코드
+  message: string / 상태메시지
+  time: string / API 호출 시간
+  list: array / 설문내용
+      id: number,
+      title: string,
+      description: string,
+      email: string
+```
 
-# GET /question/statistics/[id] : 설문 결과 통계 조회
+```bash
+   # GET /question + id: 설문지 정보가져오기
+  예시 : https://google.vote24.co.kr/question/11
+output params
+  code: number / 상태코드
+  message: string / 상태메시지
+  time: string / API 호출 시간
+  result: list: array / 설문내용
+          id: number / 설문 아이디
+          type: number / 설문 유형
+          title: string / 설문 제목
+          optionyn: boolean / 설문 옵션
+          option : array
+                id: number / 옵션 아이디
+                name: string / 옵션 이름
+```
+
+```bash
+# PUT /question/my/ + id : 설문지 작성하기
+예시 : https://google.vote24.co.kr/question/my/12
+  input params
+    email: string / 설문한 사람의 email
+    questions: array / 설문 답변
+       id: number 옵션의 id
+       answer: string 답변
 
 ```
 
----
+```bash
+# GET /question/statistics + id : 설문 통계 가져오기
+예시 : https://google.vote24.co.kr/question/statistics/11
+
+output params
+  code: number / 상태코드
+  message: string / 상태메시지
+  time: string / API 호출 시간
+  result:
+        title: string 제목,
+        description: string 설문지 설명,
+        write_cnt: number 설문지 답변 총 수량,
+          list: array / 설문내용
+              id: number / 설문 아이디
+              type: number / 설문 유형
+              title: string / 설문 제목
+              optionyn: boolean / 설문 옵션
+              option : array
+                  id: number / 옵션 아이디
+                  name: string / 옵션 이름
+```
+
+```bash
+# GET /question/statistics_list/ + id : 설문통계 리스트 가져오기
+예시 https://google.vote24.co.kr/question/statistics_list/11
+output params
+  code: number / 상태코드
+  message: string / 상태메시지
+  time: string / API 호출 시간
+  result:
+          list: array / 설문내용
+              ques_sub_id: number / 설문 옵션 아이디
+              type: number / 설문 유형
+              email: string / 이메일
+              answer: string / 설문 내용
+
+```
+
+```bash
+# GET /question: 설문 전체 가져오기
+예시 https://google.vote24.co.kr/question
+output params
+  code: number / 상태코드
+  message: string / 상태메시지
+  time: string / API 호출 시간
+  result:
+          list: array / 설문내용
+              id: number / 설문 아이디
+              title: string / 설문 제목
+              email: string / 이메일
+              description: string / 설문 내용
+
+```

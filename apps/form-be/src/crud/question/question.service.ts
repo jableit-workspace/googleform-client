@@ -7,7 +7,7 @@ import {
   QuestionOption,
   QuestionRecv,
 } from 'src/packet/question.entity';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { WriteMyDto, WriteQuestionDto } from './dto/insert-question.dto';
 import { questionType } from 'src/type';
 
@@ -47,6 +47,7 @@ export class QuestionService {
       q.option.split(',').forEach(async (item) => {
         const newO = this.repoQuestionOption.create({
           ques_id: subQuestion.id,
+          type: q.type,
           name: item,
         });
         await this.repoQuestionOption.save(newO);
@@ -58,6 +59,18 @@ export class QuestionService {
       message: 'success',
       time: Date(),
       id: result.id,
+    };
+  }
+
+  async deleteQuestion(id: number) {
+    await this.repoQuestionMain.update(id, {
+      useyn: () => 'useyn = false',
+    });
+
+    return {
+      code: 200,
+      message: 'success',
+      time: Date(),
     };
   }
 
@@ -207,7 +220,10 @@ export class QuestionService {
     });
 
     dto.questions.map(async (q) => {
-      switch (q.type) {
+      const qOption = await this.repoQuestionOption.findOneBy({
+        ques_id: q.id,
+      });
+      switch (qOption.type) {
         case questionType.단답형:
           await this.repoQuestionOption
             .findOneBy({ ques_id: q.id })
@@ -229,6 +245,7 @@ export class QuestionService {
         ques_sub_id: q.id,
         email: dto.email,
         answer: q.answer,
+        type: qOption.type,
       });
       await this.repoQuestionRecv.save(newQ);
     });
@@ -242,8 +259,8 @@ export class QuestionService {
   async getMyPaper(email: string) {
     const list = await this.repoQuestionMain.find({
       select: ['id', 'email', 'title', 'description'],
-      where: { email },
-      order: { createdAt: 'ASC' },
+      where: { email, useyn: true },
+      order: { createdAt: 'DESC' },
     });
 
     if (!list) {
@@ -308,6 +325,106 @@ export class QuestionService {
         description: main.description,
         write_cnt: main.write_cnt,
         list,
+      },
+    };
+  }
+
+  // 통계
+  async getStatisticDiffer(id: number) {
+    const main = await this.repoQuestionMain.findOneBy({ id });
+
+    if (!main) {
+      return {
+        code: 404,
+        message: 'not found',
+        time: Date(),
+        result: null,
+      };
+    }
+
+    const list = await this.repoQuestion
+      .find({
+        select: ['id', 'type', 'title', 'optionyn'],
+        where: { qmain_id: id, type: Not(1) },
+        order: { id: 'ASC' },
+      })
+      .then(async (result) => {
+        return Promise.all(
+          result.map(async (item) => {
+            const options = await this.repoQuestionOption.find({
+              select: ['id', 'name', 'choice'],
+              where: { ques_id: item.id },
+              order: { id: 'ASC' },
+            });
+
+            return {
+              ...item,
+              options,
+            };
+          }),
+        );
+      });
+
+    const danlist = await this.repoQuestion
+      .find({
+        select: ['id', 'type', 'title', 'optionyn'],
+        where: { qmain_id: id, type: 1 },
+        order: { id: 'ASC' },
+      })
+      .then(async (result) => {
+        return Promise.all(
+          result.map(async (item) => {
+            const options = await this.repoQuestionRecv.find({
+              select: ['id', 'answer'],
+              where: { ques_sub_id: item.id },
+              order: { id: 'ASC' },
+            });
+
+            return {
+              ...item,
+              options,
+            };
+          }),
+        );
+      });
+
+    return {
+      code: 200,
+      message: 'success',
+      time: Date(),
+      result: {
+        title: main.title,
+        description: main.description,
+        write_cnt: main.write_cnt,
+        list,
+        danlist,
+      },
+    };
+  }
+
+  // 통계리스트
+  async getStatisticList(id: number) {
+    const main = await this.repoQuestionRecv.find({
+      select: ['type', 'ques_sub_id', 'email', 'answer'],
+      where: { ques_id: id },
+      order: { ques_sub_id: 'ASC' },
+    });
+
+    if (!main) {
+      return {
+        code: 404,
+        message: 'not found',
+        time: Date(),
+        result: null,
+      };
+    }
+
+    return {
+      code: 200,
+      message: 'success',
+      time: Date(),
+      result: {
+        list: main,
       },
     };
   }

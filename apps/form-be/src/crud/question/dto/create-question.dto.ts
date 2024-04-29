@@ -38,3 +38,9 @@ export class CreateQuestionDto {
   @IsArray()
   questions: QuestionDto[];
 }
+
+export class DeleteQuestionDto {
+  @IsNotEmpty()
+  @IsNumber()
+  id: string;
+}

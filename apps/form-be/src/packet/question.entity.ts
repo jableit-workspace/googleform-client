@@ -19,6 +19,8 @@ export class QuestionMain extends BaseAutoEntity {
   url: string;
   @Column({ default: '', comment: '비밀번호' })
   password: string;
+  @Column({ default: true, comment: '활성화유무' })
+  useyn: boolean;
 }
 
 @Entity('question')
@@ -39,6 +41,8 @@ export class Question extends BaseAutoEntity {
 export class QuestionOption extends BaseAutoEntity {
   @Column({ default: 0, comment: 'id' })
   ques_id: number;
+  @Column({ default: 1, comment: '1.단답형, 2.객관식, 3.체크박스' })
+  type: number;
   @Column({ default: '', comment: '옵션이름' })
   name: string;
   @Column({ default: 0, comment: '결과' })
@@ -51,38 +55,10 @@ export class QuestionRecv extends BaseAutoEntity {
   ques_id: number;
   @Column({ default: 0, comment: '하위질문id' })
   ques_sub_id: number;
+  @Column({ default: 1, comment: '1.단답형, 2.객관식, 3.체크박스' })
+  type: number;
   @Column({ default: '', comment: '생성자' })
   email: string;
   @Column({ default: '', comment: '응답' })
   answer: string;
-}
-
-@Entity('taesung_data')
-export class TaesungData extends BaseAutoEntity {
-  @Column({ default: '', comment: '제목' })
-  title: string;
-  @Column({ default: '', comment: '이름' })
-  name: string;
-  @Column({ default: '', comment: '이름' })
-  itycl: string;
-  @Column({ default: '', comment: '' })
-  p1: string;
-  @Column({ default: '', comment: '' })
-  p2: string;
-  @Column({ default: '', comment: '' })
-  p3: string;
-  @Column({ default: '', comment: '' })
-  p4: string;
-  @Column({ default: '', comment: '' })
-  p5: string;
-  @Column({ default: '', comment: '' })
-  p6: string;
-  @Column({ default: '', comment: '' })
-  p7: string;
-  @Column({ default: '', comment: '' })
-  p8: string;
-  @Column({ default: '', comment: '' })
-  p9: string;
-  @Column({ default: '', comment: '' })
-  p10: string;
 }
