@@ -1,3 +1,5 @@
 export * from './checkbox'
 export * from './radiobox'
 export * from './textbox'
+export * from './password'
+export * from './title-box'

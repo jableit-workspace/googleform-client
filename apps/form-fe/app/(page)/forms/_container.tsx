@@ -33,7 +33,7 @@ export const FormScreen = ({ email }: { email: string }) => {
   const textarea = useRef<HTMLTextAreaElement>(null)
   const [list, setList] = useState<number[]>([0])
   const [open, setOpen] = useState(false);
-  const [result, setResult] = useState<number>(0);
+  const [result, setResult] = useState<string>('');
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: 'questions'
@@ -55,6 +55,7 @@ export const FormScreen = ({ email }: { email: string }) => {
   }
 
   const onSubmit = async (data: any) => {
+    console.log(data, 'submit')
     if (list.length === 0) {
       alert('질문을 추가해주세요')
       return;
@@ -77,8 +78,9 @@ export const FormScreen = ({ email }: { email: string }) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(body)
-    }).then((res) => res.json()).then(res => setResult(res.id))
+    }).then((res) => res.json()).then(res => setResult(`${window.location.origin}/survey?id=${res.id}`))
     setOpen(true);
+    form.reset();
   }
 
   const onSubmitError = (err: FieldErrors</* FormValues */ any>) => {
@@ -89,7 +91,7 @@ export const FormScreen = ({ email }: { email: string }) => {
     <main>
       <div className="flex flex-col items-center justify-center h-full">
         <div className="sticky top-0 px-8 py-3 w-full flex gap-6 bg-opacity-95 backdrop-blur-sm justify-end shadow-md">
-          <DialogCloseButton open={open} setOpen={setOpen} id={result} />
+          <DialogCloseButton open={open} setOpen={setOpen} url={result} />
           <Button type="submit" onClick={form.handleSubmit(onSubmit, onSubmitError)} variant={"default"} >보내기</Button>
           <Button type="button" size={"icon"} variant={"ghost"}>
             <Eye />
@@ -126,7 +128,7 @@ export const FormScreen = ({ email }: { email: string }) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Textarea ref={textarea} className="h-auto overflow-hidden" placeholder={'설문지 설명'} rows={1} onChange={e => {
+                        <Textarea className="h-auto overflow-hidden" placeholder={'설문지 설명'} rows={1} {...field} ref={textarea} onChange={e => {
                           if (textarea.current) {
                             textarea.current.style.height = 'auto';
                             textarea.current.style.height = textarea.current.scrollHeight + 'px';

@@ -50,8 +50,8 @@ export const authOptions: NextAuthOptions = {
       }
     },
     async redirect({ url, baseUrl }) {
-      console.log("redirect", url, baseUrl);
-      return baseUrl;
+      const re_url = process.env.NODE_ENV === "development" ? baseUrl : url;
+      return re_url;
     },
   },
 };
