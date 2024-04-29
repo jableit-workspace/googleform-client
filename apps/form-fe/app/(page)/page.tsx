@@ -1,7 +1,5 @@
-import { MainScreen } from './_container'
+import { MainScreen } from "./_container";
 export default function MainPage() {
-
-  return (
-    <MainScreen />
-  )
+  const test = "test";
+  return <MainScreen />;
 }
