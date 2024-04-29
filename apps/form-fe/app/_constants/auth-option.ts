@@ -50,7 +50,7 @@ export const authOptions: NextAuthOptions = {
       }
     },
     async redirect({ url, baseUrl }) {
-      const re_url = process.env.NODE_ENV === "development" ? baseUrl : url;
+      const re_url = process.env.NODE_ENV === "development" ? baseUrl : 'https://googlefront.vote24.co.kr';
       return re_url;
     },
   },
